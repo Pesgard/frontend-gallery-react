@@ -35,10 +35,11 @@ jobs:
           USER: ${{ secrets.DEPLOY_USER }}
         run: |
           echo "🚀 Desplegando archivos en $HOST..."
-          # Limpiar directorio anterior
-          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo rm -rf /var/www/html/*"
-          # Copiar nuevos archivos via SCP
-          scp -o StrictHostKeyChecking=no -r ./dist/* ${USER}@${HOST}:/var/www/html/
+          # Copiar archivos a directorio temporal
+          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "rm -rf /tmp/deploy && mkdir -p /tmp/deploy"
+          scp -o StrictHostKeyChecking=no -r ./dist/* ${USER}@${HOST}:/tmp/deploy/
+          # Mover a destino final con sudo
+          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo rm -rf /var/www/html/* && sudo mv /tmp/deploy/* /var/www/html/"
           # Ajustar permisos para Apache
           ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo chown -R www-data:www-data /var/www/html/"
           ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo systemctl reload apache2 || sudo systemctl restart apache2"
@@ -49,10 +50,11 @@ jobs:
           USER: ${{ secrets.DEPLOY_USER }}
         run: |
           echo "🚀 Desplegando archivos en $HOST..."
-          # Limpiar directorio anterior
-          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo rm -rf /var/www/html/*"
-          # Copiar nuevos archivos via SCP
-          scp -o StrictHostKeyChecking=no -r ./dist/* ${USER}@${HOST}:/var/www/html/
+          # Copiar archivos a directorio temporal
+          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "rm -rf /tmp/deploy && mkdir -p /tmp/deploy"
+          scp -o StrictHostKeyChecking=no -r ./dist/* ${USER}@${HOST}:/tmp/deploy/
+          # Mover a destino final con sudo
+          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo rm -rf /var/www/html/* && sudo mv /tmp/deploy/* /var/www/html/"
           # Ajustar permisos para Apache
           ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo chown -R www-data:www-data /var/www/html/"
           ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo systemctl reload apache2 || sudo systemctl restart apache2"
