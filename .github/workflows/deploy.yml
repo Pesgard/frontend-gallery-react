@@ -23,9 +23,6 @@ jobs:
       - name: Build React application
         run: npm run build
 
-      - name: Install rsync
-        run: sudo apt-get update && sudo apt-get install -y rsync
-
       - name: Add SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -38,10 +35,10 @@ jobs:
           USER: ${{ secrets.DEPLOY_USER }}
         run: |
           echo "🚀 Desplegando archivos en $HOST..."
-          # Limpiar directorio anterior (archivos de SvelteKit u otros)
-          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo rm -rf /var/www/html/* /var/www/html/.*" || true
-          # Copiar nuevos archivos
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./dist/ ${USER}@${HOST}:/var/www/html/
+          # Limpiar directorio anterior
+          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo rm -rf /var/www/html/*"
+          # Copiar nuevos archivos via SCP
+          scp -o StrictHostKeyChecking=no -r ./dist/* ${USER}@${HOST}:/var/www/html/
           # Ajustar permisos para Apache
           ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo chown -R www-data:www-data /var/www/html/"
           ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo systemctl reload apache2 || sudo systemctl restart apache2"
@@ -53,11 +50,9 @@ jobs:
         run: |
           echo "🚀 Desplegando archivos en $HOST..."
           # Limpiar directorio anterior
-          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo rm -rf /var/www/html/* /var/www/html/.*" || true
-          # Copiar nuevos archivos
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./dist/ ${USER}@${HOST}:/var/www/html/
+          ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo rm -rf /var/www/html/*"
+          # Copiar nuevos archivos via SCP
+          scp -o StrictHostKeyChecking=no -r ./dist/* ${USER}@${HOST}:/var/www/html/
           # Ajustar permisos para Apache
           ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo chown -R www-data:www-data /var/www/html/"
           ssh -o StrictHostKeyChecking=no ${USER}@${HOST} "sudo systemctl reload apache2 || sudo systemctl restart apache2"
-
-
