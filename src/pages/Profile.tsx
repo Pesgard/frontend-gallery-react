@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { User, Calendar, Image as ImageIcon, Heart, Edit, Camera } from 'lucide-react';
+import { User, Calendar, Image as ImageIcon, Edit, Camera } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { imagesApi, eventsApi } from '../services/api';
 import { ImageCard, EventCard, LoadingSpinner } from '../components';
