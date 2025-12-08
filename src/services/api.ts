@@ -13,7 +13,7 @@ import type {
   Comment,
 } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://escuela.esgardpeinado.dev/api';
 
 // ========== Helper Functions ==========
 function getAuthHeaders(): HeadersInit {
